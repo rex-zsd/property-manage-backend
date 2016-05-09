@@ -26,9 +26,11 @@ router.post('/save', upload.array('file'), function(req, res, next) {
     var body = req.body;
     var ComplainEntity = new ComplainModel({
       userId: req.cookies.TOKEN,
+      userName: req.cookies.USERNAME,
       content: body.content,
       createDate: new Date(),
-      imgList: req.files
+      imgList: req.files,
+      status: 0
     });
     ComplainEntity.save(function(err, complain) {
       if(err) {

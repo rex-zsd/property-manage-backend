@@ -10,8 +10,8 @@ var upload = multer({
   // }
 });
 
-router.post('/save', upload.array('file'), function(req, res, next){
-  if(!req.cookies.TOKEN){
+router.post('/save', upload.array('file'), function(req, res, next) {
+  if (!req.cookies.TOKEN) {
     res.send({
       status: 99,
       info: '请先登录'
@@ -20,15 +20,17 @@ router.post('/save', upload.array('file'), function(req, res, next){
     var body = req.body;
     var RepairEntity = new RepairModel({
       userId: req.cookies.TOKEN,
+      userName: req.cookies.USERNAME,
       type: body.type,
       content: body.content,
       date: body.date,
       imgList: req.files,
-      createDate: new Date()
+      createDate: new Date(),
+      status: 0
     });
-    RepairEntity.save(function(err, repair){
+    RepairEntity.save(function(err, repair) {
       console.log(repair);
-      if(err) {
+      if (err) {
         res.send({
           status: 200,
           info: '系统错误'
@@ -39,7 +41,7 @@ router.post('/save', upload.array('file'), function(req, res, next){
             id: repair._id
           },
           status: 100,
-          info: '保修成功'
+          info: '报修成功'
         });
       }
     });
@@ -51,8 +53,8 @@ router.post('/save', upload.array('file'), function(req, res, next){
  * @param  {[type]} function( [description]
  * @return {[type]}           [description]
  */
-router.get('/list', function(req, res, next){
-  if(!req.cookies.TOKEN){
+router.get('/list', function(req, res, next) {
+  if (!req.cookies.TOKEN) {
     res.send({
       status: 99,
       info: '请先登录'
@@ -61,10 +63,11 @@ router.get('/list', function(req, res, next){
     RepairModel.find({
       userId: req.cookies.TOKEN
     }, null, {
-      sort: {'_id': -1}
-    },
-    function(err, repairList){
-      if(err) {
+      sort: {
+        '_id': -1
+      }
+    }, function(err, repairList) {
+      if (err) {
         res.send({
           status: 200,
           info: '系统错误'
@@ -85,8 +88,8 @@ router.get('/list', function(req, res, next){
  * @param  {[type]} function(req, res,          next [description]
  * @return {[type]}               [description]
  */
-router.get('/detail', function(req, res, next){
-  if(!req.cookies.TOKEN){
+router.get('/detail', function(req, res, next) {
+  if (!req.cookies.TOKEN) {
     res.send({
       status: 99,
       info: '请先登录'
@@ -95,7 +98,7 @@ router.get('/detail', function(req, res, next){
     RepairModel.findOne({
       userId: req.cookies.TOKEN,
       _id: req.query.id
-    }, function(err, repair){
+    }, function(err, repair) {
       console.log(repair);
       res.send({
         status: 200,
